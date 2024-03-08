@@ -12,6 +12,7 @@ function App() {
       <Router>
         <Sidebar /> {/* Sidebar now inside Router */}
         <Routes>
+        <Route path="/" element={<DiscoveryPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/discovery" element={<DiscoveryPage />} />
           <Route path="/generateInformation" element={<GenerateInformation />} />
