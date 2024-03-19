@@ -4,6 +4,8 @@ import Class from "../components/Class";
 import ClassInfo from "../components/classDetails";
 import Modal from "../components/modal"; // Ensure this is the correct path to your Modal component
 import useModalReducer from "../utils/useModalReducer";
+import classList from "../components/mockups/classList";
+import { data, columns } from "../components/mockups/tableDataMockups"
 
 const ClassesPage = () => {
     const modalInitialState = {
@@ -20,7 +22,7 @@ const ClassesPage = () => {
             type: "openClassInfoModal",
             payload: {
                 modalTitle: "Class Information",
-                modalContent: <ClassInfo classDetails={classInfo} onAssignTeacher={handleCancel} onDeleteStudent={handleCancel} />,
+                modalContent: <ClassInfo classDetails={classInfo} onAssignTeacher={handleCancel} onDeleteStudent={handleCancel} allStudents={data}/>,
             },
         });
     };

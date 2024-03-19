@@ -46,8 +46,9 @@ const Sidebar = () => {
         </MenuSection>
         <MenuSection title="Community Information">
           <MenuItem to="/generateInformation">Generate Graph</MenuItem>
-          <MenuItem to="/get-information">Get Information</MenuItem>
           <MenuItem to="/classes">Classes</MenuItem>
+          <MenuItem to="/donations">Manage Donations</MenuItem>
+          
         </MenuSection>
         <MenuSection title="Actions">
           <MenuItem to="/logout">Logout</MenuItem>

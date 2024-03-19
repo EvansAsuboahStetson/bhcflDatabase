@@ -35,6 +35,20 @@ const useModalReducer = (state, action) => {
         modalTitle: action.payload.modalTitle,
         modalContent: action.payload.modalContent,
       };
+      case "openDonationModal":
+        return {
+          ...state,
+          showModal: true,
+          modalTitle: action.payload.modalTitle,
+          modalContent: action.payload.modalContent,
+        };
+        case "openSelectedDonationModal":
+          return {
+            ...state,
+            showModal: true,
+            modalTitle: action.payload.modalTitle,
+            modalContent: action.payload.modalContent,
+          };
     default:
       return state;
   }

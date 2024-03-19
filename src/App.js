@@ -7,6 +7,7 @@ import DiscoveryPage from './pages/DiscoveryPage';
 import GenerateInformation from './pages/GenerateInformation';
 
 import ClassesPage from './pages/ClassesPage';
+import DonationPage from './pages/donationPage';
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           <Route path="/discovery" element={<DiscoveryPage />} />
           <Route path="/classes" element={<ClassesPage />} />
           <Route path="/generateInformation" element={<GenerateInformation />} />
+          <Route path="/donations" element={<DonationPage />} />
+
         </Routes>
       </Router>
     </div>
