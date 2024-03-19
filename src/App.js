@@ -6,6 +6,8 @@ import Sidebar from './components/sidebar';
 import DiscoveryPage from './pages/DiscoveryPage';
 import GenerateInformation from './pages/GenerateInformation';
 
+import ClassesPage from './pages/ClassesPage';
+
 function App() {
   return (
     <div className="App">
@@ -15,6 +17,7 @@ function App() {
         <Route path="/" element={<DiscoveryPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/discovery" element={<DiscoveryPage />} />
+          <Route path="/classes" element={<ClassesPage />} />
           <Route path="/generateInformation" element={<GenerateInformation />} />
         </Routes>
       </Router>

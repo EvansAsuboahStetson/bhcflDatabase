@@ -17,6 +17,54 @@ const modalInitialState = {
   modalTitle: "",
   rowData: null, // Store the data of the row being interacted with
 };
+const AddMemberForm = ({ onSubmit }) => {
+  return (
+    <form
+      onSubmit={onSubmit}
+      style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+    >
+      <input
+        type="text"
+        name="fname"
+        placeholder="First Name"
+        style={{ padding: "5px", margin: "5px 0" }}
+      />
+      <input
+        type="text"
+        name="lname"
+        placeholder="Last Name"
+        style={{ padding: "5px", margin: "5px 0" }}
+      />
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        style={{ padding: "5px", margin: "5px 0" }}
+      />
+
+      {/*Give options for Gender*/}
+      <select>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+      {/*Create one  for Birthday*/}
+      <input type="date" name="birthday" />
+      {/*Create one  for Role*/}
+      <select> 
+        <option value="Admin">Student</option>
+        <option value="User">Parent</option>
+      </select>
+      {/*Create one  for ZipCode*/}
+      <input type="text" name="zipcode" placeholder="Zip Code" />
+   
+
+      <button type="submit" style={{ padding: "5px", marginTop: "10px" }}>
+        Add Member
+      </button>
+    </form>
+  );
+};
 
 const MemberPanel = () => {
   const [state, dispatch] = useReducer(actionFunctionreducer, {});
@@ -24,19 +72,33 @@ const MemberPanel = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [showFilter, setShowFilter] = React.useState(false);
   const [currentData, setData] = React.useState(data);
+  const [filterStatus, setFilterStatus] = React.useState("all"); // "all", "active", "inactive"
+
   const [modalstate, modaldispatch] = useReducer(
     useModalReducer,
     modalInitialState
   );
+  const handleFilterChange = (status) => {
+    setFilterStatus(status);
+  };
+  
 
   // Derived state for searchData
-  const searchData = useMemo(
-    () =>
-      currentData.filter((item) =>
+  const searchData = useMemo(() => {
+    return currentData
+      .filter(item => {
+        if (filterStatus === "active") {
+          return item.activeStatus === "Active";
+        } else if (filterStatus === "inactive") {
+          return item.activeStatus === "Inactive";
+        }
+        return true;
+      })
+      .filter(item =>
         item.name.toLowerCase().includes(searchQuery.toLowerCase())
-      ),
-    [currentData, searchQuery]
-  );
+      );
+  }, [currentData, searchQuery, filterStatus]);
+  
 
   const toggleFilter = () => setShowFilter(!showFilter);
 
@@ -56,6 +118,10 @@ const MemberPanel = () => {
   };
 
   const handleAction = (row, actionType) => {
+    if (!row) {
+      console.error("Row data is undefined in handleAction");
+      return;
+    }
     modaldispatch({ type: actionType, payload: row });
     console.log("Action on:", row.name);
     setSelectedRow(row.name);
@@ -63,7 +129,7 @@ const MemberPanel = () => {
 
   const handleCancel = () => {
     modaldispatch({ type: "modalCancel" });
-    setSelectedRow(null);
+    setSelectedRow(null)
   };
 
   const props = {
@@ -91,6 +157,24 @@ const MemberPanel = () => {
     actionFunction: handleAction,
     confirmAction: handleCancel,
   };
+  const handleAddMemberSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const memberData = Object.fromEntries(formData.entries());
+    console.log("Member data:", memberData);
+    // Process the data (e.g., update state, make API call)
+    modaldispatch({ type: "closeModal" }); // Close modal after submission
+  };
+
+  const openAddMemberModal = () => {
+    modaldispatch({
+      type: "openAddMemberModal",
+      payload: {
+        modalTitle: "Add New Member",
+        modalContent: <AddMemberForm onSubmit={handleAddMemberSubmit} />,
+      },
+    });
+  };
 
   return (
     <div className="block w-full rounded-lg bg-white text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
@@ -104,7 +188,7 @@ const MemberPanel = () => {
               className="block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight text-neutral-500 hover:isolate hover:border-transparent hover:bg-neutral-100 focus:isolate focus:border-transparent dark:text-neutral-400 dark:hover:bg-transparent"
               role="tab"
               aria-selected="true"
-              onClick={() => {}}
+              onClick={openAddMemberModal}
             >
               Add Member
             </a>
@@ -114,7 +198,7 @@ const MemberPanel = () => {
               className="block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight text-neutral-500 hover:isolate hover:border-transparent hover:bg-neutral-100 focus:isolate focus:border-transparent dark:text-neutral-400 dark:hover:bg-transparent"
               role="tab"
               aria-selected="true"
-              onClick={() => {}}
+              onClick={() => handleFilterChange("active")}
             >
               Active Members
             </a>
@@ -124,11 +208,19 @@ const MemberPanel = () => {
               className="block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight text-neutral-500 hover:isolate hover:border-transparent hover:bg-neutral-100 focus:isolate focus:border-transparent dark:text-neutral-400 dark:hover:bg-transparent"
               role="tab"
               aria-selected="true"
-              onClick={() => {
-                /* Handle click here */
-              }}
+              onClick={() => handleFilterChange("inactive")}
             >
               Inactive Members
+            </a>
+          </li>
+          <li role="presentation">
+            <a
+              className="block border-x-0 border-b-2 border-t-0 border-transparent px-7 pb-3.5 pt-4 text-xs font-medium uppercase leading-tight text-neutral-500 hover:isolate hover:border-transparent hover:bg-neutral-100 focus:isolate focus:border-transparent dark:text-neutral-400 dark:hover:bg-transparent"
+              role="tab"
+              aria-selected="true"
+              onClick={() => handleFilterChange("all")}
+            >
+              All  Members
             </a>
           </li>
           <li role="presentation">

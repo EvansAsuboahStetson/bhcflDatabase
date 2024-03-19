@@ -2,7 +2,7 @@ import React from 'react'
 
 const Search = ({onSearchChange}) => {
   return (
-    <div className="mb-3 xl:w-96">
+    <div className="mb-3 xl:w-76">
     <div className="relative mb-4 flex w-full flex-wrap items-stretch">
         <input
             type="search"
