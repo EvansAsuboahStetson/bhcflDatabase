@@ -154,11 +154,13 @@ export const data = [
 ];
 
 export const columns = [
-  { title: "Name", dataIndex: "name" },
+
   { title: "First Name", dataIndex: "fname" },
   { title: "Last Name", dataIndex: "lname" },
   { title: "Gender", dataIndex: "gender" },
-  { title: "Age", dataIndex: "age" },
+  { title: "Birthday", dataIndex: "birthday" },
   { title: "Zip Code", dataIndex: "zipCode" },
   { title: "Role", dataIndex: "role" },
+  { title: "Active Status", dataIndex: "activeStatus" },
+  { title: "Deleted", dataIndex: "deleted" },
 ];

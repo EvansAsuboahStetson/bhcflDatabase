@@ -3,6 +3,7 @@ import React from 'react';
 
 
 const Table = ({ data, columns, updateInfo, updateInfoFunctionList,actionFunction }) => {
+  console.log(data)
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-full border-collapse">
@@ -20,9 +21,19 @@ const Table = ({ data, columns, updateInfo, updateInfoFunctionList,actionFunctio
           {data.map((row, rowIndex) => (
             <tr key={rowIndex}>
               {columns.map((column, colIndex) => (
-                <td key={colIndex} className="p-2 border">
-                  {row[column.dataIndex]}
-                </td>
+               <td key={colIndex} className="p-2 border">
+               {/* Check if the value is a boolean and convert it to a string */}
+               {typeof row[column.dataIndex] === 'boolean'
+                   ? row[column.dataIndex].toString()
+                   : column.dataIndex === 'birthday'  // Assuming 'date' is the key for your date data
+                       ? new Date(row[column.dataIndex]).toLocaleDateString('en-US', {
+                           year: 'numeric',
+                           month: 'long',
+                           day: 'numeric'
+                         })
+                       : row[column.dataIndex]
+               }
+           </td>
               ))}
               {updateInfo && (
                 <React.Fragment>

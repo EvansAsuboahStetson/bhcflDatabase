@@ -1,6 +1,6 @@
-import React, { useMemo, useReducer } from "react";
+import React, { useContext, useEffect, useMemo, useReducer } from "react";
 import Table from "./Table";
-import { data, columns } from "./mockups/tableDataMockups";
+import {columns } from "./mockups/tableDataMockups";
 import DeleteIcon from "./icon/deleteIcon";
 import EditIcon from "./icon/editIcon";
 import ViewIcon from "./icon/viewIcon";
@@ -10,6 +10,8 @@ import actionFunctionreducer from "../utils/useActionFunctionReducer";
 import Search from "./search";
 import Filter from "./filter";
 import FilterIcon from "./icon/filterIcon";
+import { handleAddSubmit } from "../apiFunctions/handlePost";
+import { UserContext } from "../utils/userContext";
 
 const modalInitialState = {
   showModal: false,
@@ -18,6 +20,7 @@ const modalInitialState = {
   rowData: null, // Store the data of the row being interacted with
 };
 const AddMemberForm = ({ onSubmit }) => {
+  
   return (
     <form
       onSubmit={onSubmit}
@@ -43,7 +46,7 @@ const AddMemberForm = ({ onSubmit }) => {
       />
 
       {/*Give options for Gender*/}
-      <select>
+      <select name="gender">
         <option value="Male">Male</option>
         <option value="Female">Female</option>
         <option value="Other">Other</option>
@@ -51,12 +54,13 @@ const AddMemberForm = ({ onSubmit }) => {
       {/*Create one  for Birthday*/}
       <input type="date" name="birthday" />
       {/*Create one  for Role*/}
-      <select> 
-        <option value="Admin">Student</option>
-        <option value="User">Parent</option>
+      <select name="role"> 
+        <option value="Student">Student</option>
+        <option value="Parent">Parent</option>
+        <option value="Supervisor">Supervisor</option>
       </select>
       {/*Create one  for ZipCode*/}
-      <input type="text" name="zipcode" placeholder="Zip Code" />
+      <input type="text" name="zipCode" placeholder="Zip Code" />
    
 
       <button type="submit" style={{ padding: "5px", marginTop: "10px" }}>
@@ -70,9 +74,15 @@ const MemberPanel = () => {
   const [state, dispatch] = useReducer(actionFunctionreducer, {});
   const [selectedRow, setSelectedRow] = React.useState(null);
   const [searchQuery, setSearchQuery] = React.useState("");
+     const { users, setUsers } = useContext(UserContext);
   const [showFilter, setShowFilter] = React.useState(false);
-  const [currentData, setData] = React.useState(data);
-  const [filterStatus, setFilterStatus] = React.useState("all"); // "all", "active", "inactive"
+  const [currentData, setData] = React.useState(users);
+  const [filterStatus, setFilterStatus] = React.useState("all");
+   // "all", "active", "inactive"
+
+
+
+
 
   const [modalstate, modaldispatch] = useReducer(
     useModalReducer,
@@ -85,19 +95,17 @@ const MemberPanel = () => {
 
   // Derived state for searchData
   const searchData = useMemo(() => {
-    return currentData
-      .filter(item => {
-        if (filterStatus === "active") {
-          return item.activeStatus === "Active";
-        } else if (filterStatus === "inactive") {
-          return item.activeStatus === "Inactive";
-        }
-        return true;
-      })
-      .filter(item =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    console.log("Filtering currentData", currentData);
+    return currentData.filter(item => {
+      if (!item || !item.fname || !item.lname) return false;
+      const lowerCaseName = `${item.fname} ${item.lname}`.toLowerCase();
+      return (
+        (filterStatus === "all" || item.activeStatus === (filterStatus === "active")) &&
+        lowerCaseName.includes(searchQuery.toLowerCase())
       );
+    });
   }, [currentData, searchQuery, filterStatus]);
+  
   
 
   const toggleFilter = () => setShowFilter(!showFilter);
@@ -106,7 +114,7 @@ const MemberPanel = () => {
     setData(filteredResults);
   };
   const resetData = () => {
-    setData(data);
+    setData(users);
   };
 
   const handleSearchChange = (e) => {
@@ -157,14 +165,28 @@ const MemberPanel = () => {
     actionFunction: handleAction,
     confirmAction: handleCancel,
   };
-  const handleAddMemberSubmit = (e) => {
+  const handleAddMemberSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const memberData = Object.fromEntries(formData.entries());
-    console.log("Member data:", memberData);
-    // Process the data (e.g., update state, make API call)
-    modaldispatch({ type: "closeModal" }); // Close modal after submission
-  };
+    
+    // Call handleAddSubmit to send the data to the API
+    try {
+      const newUser = await handleAddSubmit('user', memberData);
+      console.log("User added", newUser);
+      setUsers(prevUsers => {
+          const updatedUsers = [...prevUsers, newUser];
+          console.log("Updated Users:", updatedUsers);
+          return updatedUsers;
+      });
+  
+        modaldispatch({ type: "closeModal" }); // Close modal after submission
+    } catch (error) {
+        console.error("Error adding user:", error);
+    
+    }
+};
+
 
   const openAddMemberModal = () => {
     modaldispatch({
@@ -174,7 +196,12 @@ const MemberPanel = () => {
         modalContent: <AddMemberForm onSubmit={handleAddMemberSubmit} />,
       },
     });
+
+    
   };
+  useEffect(() => {
+    setData(users);
+  }, [users]);
 
   return (
     <div className="block w-full rounded-lg bg-white text-center shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
@@ -241,7 +268,7 @@ const MemberPanel = () => {
               <Filter
                 onClose={toggleFilter}
                 onFilter={onFilter}
-                data={data}
+                data={currentData}
                 onReset={resetData}
               />
             )}

@@ -12,9 +12,10 @@ const Filter = ({ onClose, data, onFilter,onReset}) => {
 
   const applyFilters = () => {
     const filteredData = data.filter((item) => {
+      console.log(item.zipCode===zipCode);
       return (
         (!zipCode || item.zipCode === zipCode) &&
-        (!role || item.role.toLowerCase() === role.toLowerCase()) &&
+        (!role || item?.role.toLowerCase() === role.toLowerCase()) &&
         (!age || item.age === Number(age))
       );
     });

@@ -2,6 +2,7 @@ import React from 'react';
 
 const ViewTable = ({ data }) => {
   const headers = Object.keys(data);
+  console.log(headers,"Header");
 
   return (
     <div className="flex flex-col">
