@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-const DonationEntryForm = ({ onSubmit }) => {
+
+const DonationEntryForm = ({ onSubmit, initialData }) => {
     const [donationData, setDonationData] = useState({
-      donorName: '',
-      amount: '',
-      date: '',
-      paymentMethod: '',
-      purpose: '',
+      donorName: initialData ? initialData.donorName : '',
+      amount: initialData ? initialData.amount : '',
+      date: initialData ? initialData.date : '',
+      paymentMethod: initialData ? initialData.paymentMethod : 'cash',
+      purpose: initialData ? initialData.purpose : '',
     });
 
     const handleChange = (e) => {
@@ -14,8 +15,8 @@ const DonationEntryForm = ({ onSubmit }) => {
 
     const handleSubmit = (e) => {
       e.preventDefault();
-      onSubmit(donationData);
-      // Reset form or handle next steps
+
+     
     };
 
     return (
@@ -24,6 +25,7 @@ const DonationEntryForm = ({ onSubmit }) => {
           name="donorName" 
           type="text" 
           placeholder="Donor Name" 
+          value={donationData.donorName}
           onChange={handleChange} 
           className="px-4 py-2 border rounded shadow-sm"
         />
@@ -31,25 +33,31 @@ const DonationEntryForm = ({ onSubmit }) => {
           name="amount" 
           type="number" 
           placeholder="Amount" 
+          value={donationData.amount}
           onChange={handleChange} 
           className="px-4 py-2 border rounded shadow-sm"
         />
         <input 
           name="date" 
           type="date" 
+          value={donationData.date}
           onChange={handleChange} 
           className="px-4 py-2 border rounded shadow-sm"
         />
         <select 
           name="paymentMethod" 
+          value={donationData.paymentMethod}
           onChange={handleChange} 
           className="px-4 py-2 border rounded shadow-sm"
         >
-          {/* payment method options */}
+          <option value="cash">Cash</option>
+          <option value="check">Check</option>
+          <option value="card">Card</option>
         </select>
         <textarea 
           name="purpose" 
           placeholder="Purpose or Notes" 
+          value={donationData.purpose}
           onChange={handleChange} 
           className="px-4 py-2 border rounded shadow-sm"
         ></textarea>
@@ -57,7 +65,7 @@ const DonationEntryForm = ({ onSubmit }) => {
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          Add Donation
+          {initialData ? "Edit Donation" : "Add Donation"}
         </button>
       </form>
     );

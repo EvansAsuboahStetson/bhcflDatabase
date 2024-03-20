@@ -49,13 +49,9 @@ const DonationPage = () => {
         modaldispatch({
             type: "openSelectedDonationModal",
             payload: {
-                modalTitle: "Donation Details",
+                modalTitle: "Edit Donation",
                 modalContent: (
-                    <DonationDetail 
-                        donation={donation} 
-                        onEdit={handleEditDonation} 
-                        onDelete={handleDeleteDonation}
-                    />
+                    <DonationEntryForm  initialData={donation}/>
                 ),
             },
         });

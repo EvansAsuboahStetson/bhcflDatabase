@@ -1,6 +1,7 @@
 import React from "react";
 import Select from "react-select";
 import { useState } from "react";
+import DeleteIcon from "./icon/deleteIcon";
 const ClassInfo = ({
   classDetails,
   onAssignTeacher,
@@ -19,18 +20,24 @@ const ClassInfo = ({
     <div>
       <h2 className="text-xl font-bold mb-4">{classDetails?.name}</h2>
       <p>Teacher: {classDetails?.instructor}</p>
-      <button
-        className="my-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onClick={() => onAssignTeacher(classDetails.id)}
-      >
-        Assign New Teacher
-      </button>
+      <div className="flex items-center justify-start my-3 mx-3">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+          onClick={() => onAssignTeacher(classDetails.id)}
+        >
+          Assign New Teacher
+        </button>
+        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          <DeleteIcon />
+        </button>
+      </div>
       <Select // or <select> for simple dropdown
         className="my-3"
         value={options.find((option) => option.value === selectedStudent)}
         onChange={(option) => setSelectedStudent(option ? option.value : null)}
         options={options}
       />
+
       <button
         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
         onClick={() => onAddStudent(classDetails.id, selectedStudent)}
@@ -51,10 +58,10 @@ const ClassInfo = ({
               <td className="border px-4 py-2">{student.name}</td>
               <td className="border px-4 py-2">
                 <button
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                   onClick={() => onDeleteStudent(classDetails.id, student.id)}
                 >
-                  Delete
+                  <DeleteIcon />
                 </button>
               </td>
             </tr>
