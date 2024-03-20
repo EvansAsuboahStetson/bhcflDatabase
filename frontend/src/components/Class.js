@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Modal from '../components/modal';
-import CreateClassForm from '../components/createClass';
+import Modal from './modal';
+import CreateClassForm from './createClass';
 
 const Class = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
